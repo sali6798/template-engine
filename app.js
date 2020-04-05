@@ -41,64 +41,66 @@ function employeeTypeDetails(role) {
     return details;
 }
 
-function createEmployee(role) {
+function askDetails(roleSpecificQ) {
+    return [
+        {
+            type: 'input',
+            name: `name`,
+            message: `Name:`,
+        },
+        {
+            type: 'input',
+            name: `id`,
+            message: `id:`,
+        },
+        {
+            type: 'input',
+            name: `email`,
+            message: `Email:`,
+        },
+        roleSpecificQ
+    ]
+}
+
+async function createEmployee(role) {
     const employeeDetails = employeeTypeDetails(role);
     // prompts for user to answer about their details
-    inquirer
-        .prompt([
-            {
-                type: 'input',
-                name: `name`,
-                message: `Name:`,
-            },
-            {
-                type: 'input',
-                name: `id`,
-                message: `id:`,
-            },
-            {
-                type: 'input',
-                name: `email`,
-                message: `Email:`,
-            },
-            employeeDetails[2]
-        ])
-        .then(response => {
-            // create a new instance of employee's role type (Manager, Engineer, Intern)
-            const newEmployee = new employeeDetails[0](response.name, response.id, response.email, response[employeeDetails[1]]);
-            // add new employee to array
-            employeesList.push(newEmployee);
-        })
-        .then(() => addEmployee())
+    const response = await inquirer.prompt(askDetails(employeeDetails[2]));
+    // create a new instance of employee's role type (Manager, Engineer, Intern)
+    const newEmployee = new employeeDetails[0](response.name, response.id, response.email, response[employeeDetails[1]]);
+    // add new employee to array
+    employeesList.push(newEmployee);
+    addEmployee();
+}
+
+function askMoreEmployees() {
+    return {
+        type: 'list',
+        name: "employee",
+        message: "Is there any more employees to add?",
+        choices: ['Engineer', 'Intern', 'No one else']
+    }
 }
 
 // asks user if there are any more employees to add
-function addEmployee() {
-    inquirer
-        .prompt({
-            type: 'list',
-            name: "employee",
-            message: "Is there any more employees to add?",
-            choices: ['Engineer', 'Intern', 'No one else']
-        })
-        .then(({employee}) => {
-            switch(employee) {
-                case "Engineer":
-                    createEmployee("Engineer");
-                    break;
-                case "Intern":
-                    createEmployee("Intern");
-                    break;
-                default:
-                    console.log("Ok, creating summary!");
-                    // turns the employee list into a html
-                    // that will display all the employee info
-                    const html = render(employeesList);
-                    // write html to file in output/ folder
-                    fs.writeFileSync(outputPath, html);
-                    break;
-            }
-        })
+async function addEmployee() {
+    const {employee} = await inquirer.prompt(askMoreEmployees());
+    switch(employee) {
+        case "Engineer":
+            createEmployee("Engineer");
+            break;
+        case "Intern":
+            createEmployee("Intern");
+            break;
+        default:
+            console.log("Ok, creating summary!");
+            // turns the employee list into a html
+            // that will display all the employee info
+            const html = render(employeesList);
+            // write html to file in output/ folder
+            fs.writeFileSync(outputPath, html);
+            break;
+    }
 }
 
 createEmployee();
