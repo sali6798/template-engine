@@ -62,17 +62,6 @@ function askDetails(roleSpecificQ) {
     ]
 }
 
-async function createEmployee(role) {
-    const employeeDetails = employeeTypeDetails(role);
-    // prompts for user to answer about their details
-    const response = await inquirer.prompt(askDetails(employeeDetails[2]));
-    // create a new instance of employee's role type (Manager, Engineer, Intern)
-    const newEmployee = new employeeDetails[0](response.name, response.id, response.email, response[employeeDetails[1]]);
-    // add new employee to array
-    employeesList.push(newEmployee);
-    addEmployee();
-}
-
 function askMoreEmployees() {
     return {
         type: 'list',
@@ -101,6 +90,17 @@ async function addEmployee() {
             fs.writeFileSync(outputPath, html);
             break;
     }
+}
+
+async function createEmployee(role) {
+    const employeeDetails = employeeTypeDetails(role);
+    // prompts for user to answer about their details
+    const response = await inquirer.prompt(askDetails(employeeDetails[2]));
+    // create a new instance of employee's role type (Manager, Engineer, Intern)
+    const newEmployee = new employeeDetails[0](response.name, response.id, response.email, response[employeeDetails[1]]);
+    // add new employee to array
+    employeesList.push(newEmployee);
+    addEmployee();
 }
 
 createEmployee();
