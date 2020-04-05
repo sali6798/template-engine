@@ -9,116 +9,96 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
-let employees = [];
+let employeesList = [];
 
-function createEmployee() {
-    return [
-        {
-            type: 'input',
-            name: `name`,
-            message: `Name:`,
-        },
-        {
-            type: 'input',
-            name: `id`,
-            message: `id:`,
-        },
-        {
-            type: 'input',
-            name: `email`,
-            message: `Email:`,
-        },
-    ]
+// returns details specific to the role - their type, property
+// specific to their role and a prompt to ask user for this value
+function employeeTypeDetails(role) {
+    let details = [];
+    switch(role) {
+        case "Engineer":
+            details = [Engineer, "github", {
+                type: 'input',
+                name: `github`,
+                message: `Github username:`,
+            }]
+            break;
+        case "Intern":
+            details = [Intern, "school", {
+                type: 'input',
+                name: `school`,
+                message: `School:`,
+            }]
+            break;
+        default:
+            details = [Manager, "officeNumber", {
+                type: 'input',
+                name: `officeNumber`,
+                message: `Office Number:`,
+            }]
+            break;
+    }
+    return details;
 }
 
-function addEngineer() {
-    inquirer.prompt(
-        createEmployee().concat([{
-            type: 'input',
-            name: `github`,
-            message: `Github username:`,
-        }])
-    )
-    .then(({name, id, email, github}) => {
-        const engineer = new Engineer(name, id, email, github);
-        employees.push(engineer);
-    })
-    .then(() => addEmployee())
+function createEmployee(role) {
+    const employeeDetails = employeeTypeDetails(role);
+    // prompts for user to answer about their details
+    inquirer
+        .prompt([
+            {
+                type: 'input',
+                name: `name`,
+                message: `Name:`,
+            },
+            {
+                type: 'input',
+                name: `id`,
+                message: `id:`,
+            },
+            {
+                type: 'input',
+                name: `email`,
+                message: `Email:`,
+            },
+            employeeDetails[2]
+        ])
+        .then(response => {
+            // create a new instance of employee's role type (Manager, Engineer, Intern)
+            const newEmployee = new employeeDetails[0](response.name, response.id, response.email, response[employeeDetails[1]]);
+            // add new employee to array
+            employeesList.push(newEmployee);
+        })
+        .then(() => addEmployee())
 }
 
-function addIntern() {
-    inquirer.prompt(
-        createEmployee().concat([{
-            type: 'input',
-            name: `school`,
-            message: `School:`,
-        }])
-    )
-    .then(({name, id, email, school}) => {
-        const intern = new Intern(name, id, email, school);
-        employees.push(intern);
-    })
-    .then(() => addEmployee())
-}
-
+// asks user if there are any more employees to add
 function addEmployee() {
-    inquirer.prompt({
-        type: 'list',
-        name: "employee",
-        message: "Is there any more employees to add?",
-        choices: ['Engineer', 'Intern', 'No one else']
-    }).then(({employee}) => {
-        if (employee === "Engineer") {
-            addEngineer();
-        }
-        else if (employee === "Intern") {
-            addIntern();
-        }
-        else {
-            console.log("Ok, creating summary!");
-            const html = render(employees);
-            fs.writeFileSync(outputPath, html);
-        }
-    })
+    inquirer
+        .prompt({
+            type: 'list',
+            name: "employee",
+            message: "Is there any more employees to add?",
+            choices: ['Engineer', 'Intern', 'No one else']
+        })
+        .then(({employee}) => {
+            switch(employee) {
+                case "Engineer":
+                    createEmployee("Engineer");
+                    break;
+                case "Intern":
+                    createEmployee("Intern");
+                    break;
+                default:
+                    console.log("Ok, creating summary!");
+                    // turns the employee list into a html
+                    // that will display all the employee info
+                    const html = render(employeesList);
+                    // write html to file in output/ folder
+                    fs.writeFileSync(outputPath, html);
+                    break;
+            }
+        })
 }
 
-inquirer.prompt(
-    createEmployee().concat([{
-        type: 'input',
-        name: `officeNumber`,
-        message: `Office Number:`,
-    }])
-)
-.then(({name, id, email, officeNumber}) => {
-    const manager = new Manager(name, id, email, officeNumber);
-    employees.push(manager);
-})
-.then(() => addEmployee())
-
-
-
-
-
-
-// Write code to use inquirer to gather information about the development team members,
-// and to create objects for each team member (using the correct classes as blueprints!)
-
-// After the user has input all employees desired, call the `render` function (required
-// above) and pass in an array containing all employee objects; the `render` function will
-// generate and return a block of HTML including templated divs for each employee!
-
-// After you have your html, you're now ready to create an HTML file using the HTML
-// returned from the `render` function. Now write it to a file named `team.html` in the
-// `output` folder. You can use the variable `outputPath` above target this location.
-// Hint: you may need to check if the `output` folder exists and create it if it
-// does not.
-
-// HINT: each employee type (manager, engineer, or intern) has slightly different
-// information; write your code to ask different questions via inquirer depending on
-// employee type.
-
-// HINT: make sure to build out your classes first! Remember that your Manager, Engineer,
-// and Intern classes should all extend from a class named Employee; see the directions
-// for further information. Be sure to test out each class and verify it generates an 
-// object with the correct structure and methods. This structure will be crucial in order
-// for the provided `render` function to work!```
+createEmployee();
