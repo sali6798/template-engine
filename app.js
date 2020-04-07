@@ -21,6 +21,10 @@ function employeeTypeDetails(role) {
                 type: 'input',
                 name: `github`,
                 message: `Github username:`,
+                validate: function(value) {
+                    var valid = /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/g;
+                    return valid.test(value) && value.length <= 39 ? true : "Please enter a valid username";
+                } 
             }]
             break;
         case "Intern":
@@ -35,6 +39,9 @@ function employeeTypeDetails(role) {
                 type: 'input',
                 name: `officeNumber`,
                 message: `Office Number:`,
+                validate: function(value) {
+                    return !isNaN(parseInt(value)) ? true : "Please enter a valid office number";
+                }
             }]
             break;
     }
@@ -52,11 +59,18 @@ function askDetails(roleSpecificQ) {
             type: 'input',
             name: `id`,
             message: `id:`,
+            validate: function(value) {
+                return !isNaN(parseInt(value)) ? true : "Please enter a valid id";
+            } 
         },
         {
             type: 'input',
             name: `email`,
             message: `Email:`,
+            validate: function(value) {
+                var valid = /^[\w-\.]+@[\w\.-]+\.[a-zA-Z]{2,7}$/g;
+                return valid.test(value) ? true : "Please enter a valid email";
+            } 
         },
         roleSpecificQ
     ]
