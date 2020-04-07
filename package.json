@@ -21,9 +21,7 @@
   },
   "homepage": "https://github.com/sali6798/template-engine#readme",
   "dependencies": {
-    "fs": "0.0.1-security",
-    "inquirer": "^7.1.0",
-    "path": "^0.12.7"
+    "inquirer": "^7.1.0"
   },
   "devDependencies": {
     "jest": "^25.2.7"
