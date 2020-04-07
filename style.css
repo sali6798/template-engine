@@ -1,0 +1,44 @@
+body {
+    background-color: rgb(115, 192, 234);
+}
+
+.container {
+    margin-top: 40px;
+}
+
+.team-heading {
+    background: rgb(0,212,255);
+    background: linear-gradient(90deg, rgba(0,212,255,1) 0%, 
+    rgba(5,94,177,1) 14%, rgba(9,9,121,1) 36%, 
+    rgba(28,25,89,1) 44%, rgba(31,28,84,1) 56%, 
+    rgba(9,9,121,1) 64%, rgba(4,131,201,1) 86%, rgba(0,212,255,1) 100%);
+    box-shadow: 0 6px 8px -6px rgba(31,28,84,1);
+    color: white;
+}
+
+.card {
+    box-shadow: 4px 4px 6px -2px rgb(49, 119, 163), 
+                -2px 0px 6px 0px rgb(49, 119, 163);
+}
+
+.card, .list-group-item {
+    border: 1px solid rgba(31,28,84,0.6);
+}
+
+.card-header {
+    text-align: center;
+    color: white;
+}
+
+.manager {
+    background-color: rgba(9,9,121,1);
+}
+
+.engineer {
+    background-color: rgba(4,131,201,1);
+}
+
+.intern {
+    background-color: rgba(0,212,255,1);
+}
+
