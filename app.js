@@ -6,6 +6,8 @@ const OUTPUT_DIR = path.resolve(__dirname, "output");
 const outputPath = path.join(OUTPUT_DIR, "team.html");
 const render = require("./lib/htmlRenderer");
 
+// gets employee information from user inputs and
+// writes to html file
 const main = async () => {
     const employees = await summaryCreation.collectSummary();
     console.log("Ok, creating summary!");
