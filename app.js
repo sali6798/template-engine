@@ -22,6 +22,8 @@ function employeeTypeDetails(role) {
                 name: `github`,
                 message: `Github username:`,
                 validate: function(value) {
+                    // github usernames can only be a max of 39 chars made up of alphanumeric 
+                    // chars and dashes '-' and cannot start or end with a dash
                     var valid = /^[a-zA-Z0-9]+(-[a-zA-Z0-9]+)*$/g;
                     return valid.test(value) && value.length <= 39 ? true : "Please enter a valid username";
                 } 
@@ -40,7 +42,8 @@ function employeeTypeDetails(role) {
                 name: `officeNumber`,
                 message: `Office Number:`,
                 validate: function(value) {
-                    return !isNaN(parseInt(value)) ? true : "Please enter a valid office number";
+                    const input = parseInt(value);
+                    return !isNaN(input) && input > 0 ? true : "Office Number must be a number > 0";
                 }
             }]
             break;
@@ -60,7 +63,8 @@ function askDetails(roleSpecificQ) {
             name: `id`,
             message: `id:`,
             validate: function(value) {
-                return !isNaN(parseInt(value)) ? true : "Please enter a valid id";
+                const input = parseInt(value);
+                return !isNaN(input) && input > 0 ? true : "id must be a number > 0";
             } 
         },
         {
@@ -68,7 +72,8 @@ function askDetails(roleSpecificQ) {
             name: `email`,
             message: `Email:`,
             validate: function(value) {
-                var valid = /^[\w-\.]+@[\w\.-]+\.[a-zA-Z]{2,7}$/g;
+                // check email is a valid format ____@____.____
+                var valid = /^[\w\.-]+@[\w\.-]+\.[a-zA-Z]{2,7}$/g;
                 return valid.test(value) ? true : "Please enter a valid email";
             } 
         },
